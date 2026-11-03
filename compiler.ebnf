@@ -1,0 +1,12 @@
+function = "func" IDENT "(" [ params ] ")" "->" type block ;
+params = param { "," param} ; 
+param = IDENT ":" type ; 
+block = "{" { statement } "}" ;
+statement = let_stmt 
+            | const_stmt 
+            | assign_stmt 
+            | if_stmt 
+            | while_stmt 
+            | return_stmt 
+            | expr_stmt ;
+
