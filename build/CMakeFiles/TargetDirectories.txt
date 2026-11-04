@@ -1,0 +1,4 @@
+C:/Users/arioz/compiler/build/CMakeFiles/compiler_lib.dir
+C:/Users/arioz/compiler/build/CMakeFiles/compiler.dir
+C:/Users/arioz/compiler/build/CMakeFiles/edit_cache.dir
+C:/Users/arioz/compiler/build/CMakeFiles/rebuild_cache.dir

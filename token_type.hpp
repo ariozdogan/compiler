@@ -1,8 +1,8 @@
 #pragma once
 
-#include <string_view> // lightweight, read-only reference to sequence of characters
+#include <string_view>
 
-enum class TokenKind {
+enum class TokenType {
     // special
     EndOfFile,
     Invalid, 
@@ -59,3 +59,5 @@ enum class TokenKind {
     RightParen,
     SemiColon
 };
+
+std::string_view to_string(TokenType kind);

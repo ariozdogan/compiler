@@ -1,0 +1,2 @@
+C:\msys64\mingw64\bin\ar.exe qc libcompiler_lib.a CMakeFiles/compiler_lib.dir/token_type.cpp.obj CMakeFiles/compiler_lib.dir/lexer.cpp.obj
+C:\msys64\mingw64\bin\ranlib.exe libcompiler_lib.a
