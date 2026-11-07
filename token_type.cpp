@@ -25,6 +25,8 @@ std::string_view to_string(TokenType kind) {
 
         case TokenType::If:
             return "If";
+        case TokenType::Elif:
+            return "Elif";
         case TokenType::Else:
             return "Else";
         case TokenType::While:

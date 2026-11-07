@@ -9,4 +9,25 @@ statement = let_stmt
             | while_stmt 
             | return_stmt 
             | expr_stmt ;
+type = "i16" | "i32" | "i64" | "f32" | "f64" ;
 
+whitespace = " " | "\t" | "\r" | "\n" ;
+comment = "//" { any_char - "\n" } ;
+
+letter = "a" ... "z" | "A" ... "Z" | "_" ;
+digit = "0" ... "9" ;
+
+IDENT = letter { letter | digit } ;
+INT_LITERAL = digit { digit } ;
+FLOAT_LITERAL = digit { digit } "." digit { digit } ;
+STRING_LITERAL = '"' { any_char - '"' } '"' ;   (* no escapes; may span lines *)
+
+keyword = "let" | "const" | "func" | "if" | "elif" | "else"
+        | "while" | "return"
+        | "true" | "false"                       (* lexed as TypeBool *)
+        | "i16" | "i32" | "i64" | "f32" | "f64" ;
+
+operator = "+" | "-" | "*" | "/" | "%" | "="
+         | "==" | "!=" | "<" | "<=" | ">" | ">="
+         | "&&" | "||" | "!" ;
+punctuation = "->" | ":" | "," | ";" | "(" | ")" | "{" | "}" ;

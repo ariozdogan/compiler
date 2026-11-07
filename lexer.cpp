@@ -2,7 +2,21 @@
 #include "token.hpp"
 #include "token_type.hpp"
 
+#include <cctype>
+#include <string_view>
+#include <unordered_map>
+
 Lexer::Lexer(std::string_view source) : source_(source) {}
+
+Token Lexer::make_token(TokenType type) {
+    Token token;
+    token.type = type;
+    token.lexeme = source_.substr(start, current-start); 
+    token.line = start_line;
+    token.col = start_col;
+
+    return token;
+}
 
 Token Lexer::next_token() {
     skip_whitespace_and_comments();
@@ -10,7 +24,6 @@ Token Lexer::next_token() {
 
     start_line = line;
     start_col = col;
-
 
     if (is_at_end()) return make_token(TokenType::EndOfFile);
 
@@ -28,8 +41,9 @@ Token Lexer::next_token() {
         case '*': return make_token(TokenType::Star);
         case '%': return make_token(TokenType::Modulo);
         case '/': return make_token(TokenType::Slash);
+        case '"': return string();
 
-        // longest match tokens
+        // longest match tokens: != <= etc.
         case '-': return make_token(match('>') ? TokenType::Arrow : TokenType::Minus);
         case '=': return make_token(match('=') ? TokenType::EqualEqual : TokenType::Assign);
         case '!': return make_token(match('=') ? TokenType::BangEqual : TokenType::Bang);
@@ -38,6 +52,10 @@ Token Lexer::next_token() {
         case '&': return make_token(match('&') ? TokenType::And : TokenType::Invalid);
         case '|': return make_token(match('|') ? TokenType::Or : TokenType::Invalid);
     }
+
+    if (is_digit(c)) return number(); // for characters 0-9
+    if (is_alpha(c)) return identifier(); // for characters a-z 
+
 
     return make_token(TokenType::Invalid);
 }
@@ -81,6 +99,13 @@ bool Lexer::match(char expected) {
     return true;
 }
 
+bool Lexer::is_digit(char c) const {
+    if (std::isdigit(static_cast<unsigned char>(c))) {
+        return true;
+    }
+    else return false;
+}
+
 void Lexer::skip_whitespace_and_comments() {
     while (true) {
         switch (peek()) {
@@ -92,9 +117,9 @@ void Lexer::skip_whitespace_and_comments() {
                 break;  // new line
             case '/':
                 if (peek_next() == '/') {
-                    while(peek() != '\n' || !is_at_end()) {
+                    while(peek() != '\n' && !is_at_end()) {
                         advance();
-                    };
+                    }
                     break;
                 }
                 else return;
@@ -104,12 +129,59 @@ void Lexer::skip_whitespace_and_comments() {
     }
 }
 
-Token Lexer::make_token(TokenType type) {
-    Token token;
-    token.type = type;
-    token.lexeme = source_.substr(start, current-start); 
-    token.line = start_line;
-    token.col = start_col;
+Token Lexer::string() {
+    while (peek() != '"' && !is_at_end()) advance();
 
-    return token;
+    if (is_at_end()) return make_token(TokenType::Invalid);
+
+    advance(); // consume the "
+    return make_token(TokenType::StringLiteral);
+}
+
+Token Lexer::number() {
+    while (is_digit(peek())) advance();
+
+    if (peek() == '.' && is_digit(peek_next())){
+        advance(); // consume the .
+        while (is_digit(peek())) advance();
+        return make_token(TokenType::FloatLiteral);
+    }
+    return make_token(TokenType::IntLiteral);
+}
+
+std::unordered_map<std::string_view, TokenType> keyword_table = {
+    {"let", TokenType::Let},
+    {"const", TokenType::Const},
+    {"func", TokenType::Func},
+    {"if", TokenType::If},
+    {"elif", TokenType::Elif},
+    {"else", TokenType::Else},
+    {"while", TokenType::While},
+    {"return", TokenType::Return},
+    {"true", TokenType::TypeBool},
+    {"false", TokenType::TypeBool},
+    {"i16", TokenType::TypeI16},
+    {"i32", TokenType::TypeI32},
+    {"i64", TokenType::TypeI64},
+    {"f32", TokenType::TypeF32},
+    {"f64", TokenType::TypeF64}
+};
+
+Token Lexer::identifier() {
+    while (is_alphanumeric(peek())) advance();
+
+    std::string_view lexeme = source_.substr(start, current-start);
+
+    auto it = keyword_table.find(lexeme);
+    if (it != keyword_table.end()) return make_token(it->second);
+
+    return make_token(TokenType::Identifier);
+}
+
+bool Lexer::is_alpha(char c) {
+    return (isalpha(static_cast<unsigned char>(c)) || c == '_');
+}
+
+bool Lexer::is_alphanumeric(char c) {
+    return (isalnum(c) || c == '_');
 }

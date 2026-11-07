@@ -18,6 +18,7 @@ enum class TokenType {
 
     // keywords
     If,
+    Elif,
     Else,
     While,
     Func,
