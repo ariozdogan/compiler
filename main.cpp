@@ -1,4 +1,5 @@
 #include "lexer.hpp"
+#include "token.hpp"
 #include "token_type.hpp"
 #include "ast.hpp"
 
@@ -25,10 +26,10 @@ void test_lexer() {
 
 int main() {
     std::unique_ptr<Expr> one = std::make_unique<IntLiteralExpr>(1, 1, 1);
-    
-    std::string result = ast_printer(*one);
+    std::string result_1 = ast_printer(*one);
+    std::cout << result_1;
 
-    std::cout << result;
+    
 
     return 0;
 }

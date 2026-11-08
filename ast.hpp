@@ -6,6 +6,7 @@
 #include <memory>
 #include <string>
 #include <cstdint>
+#include <vector>
 
 enum class ExprKind {
     IntLiteral,
@@ -63,11 +64,11 @@ struct VariableRefExpr : Expr {
 };
 
 struct UnaryExpr : Expr {
-    TokenType unary_op;
+    TokenType op;
     std::unique_ptr<Expr> operand; // operand is its own subtree, ex. -(1 + 2)
 
-    UnaryExpr(TokenType unary_op, std::unique_ptr<Expr> operand, int line, int col)
-        : Expr(ExprKind::UnaryOp, line, col), unary_op(unary_op), operand(std::move(operand)) {}
+    UnaryExpr(TokenType op, std::unique_ptr<Expr> operand, int line, int col)
+        : Expr(ExprKind::UnaryOp, line, col), op(op), operand(std::move(operand)) {}
 };
 
 // inherits from Expr and adds binary specific data
@@ -79,6 +80,14 @@ struct BinaryExpr : Expr {
     BinaryExpr(TokenType op, std::unique_ptr<Expr> left, std::unique_ptr<Expr> right, int line, int col)
         : Expr(ExprKind::BinaryOp, line, col), op(op), left(std::move(left)), right(std::move(right)) {}
 
+};
+
+struct FuncCall : Expr {
+    std::string name;
+    std::vector<std::unique_ptr<Expr>> args;
+
+    FuncCall(std::string name, std::vector<std::unique_ptr<Expr>> args, int line, int col)
+        : Expr(ExprKind::FuncCall, line, col), name(name), args(std::move(args)) {}
 };
 
 std::string ast_printer(const Expr& expr);
