@@ -8,6 +8,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 add_library(compiler_lib
     token_type.cpp
     lexer.cpp
+    ast.cpp
 )
 target_include_directories(compiler_lib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
