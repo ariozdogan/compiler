@@ -25,10 +25,6 @@ void test_lexer() {
 
 
 int main() {
-    std::unique_ptr<Expr> one = std::make_unique<IntLiteralExpr>(1, 1, 1);
-    std::string result_1 = ast_printer(*one);
-    std::cout << result_1;
-
     
 
     return 0;

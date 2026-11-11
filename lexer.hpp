@@ -4,11 +4,13 @@
 #include "token_type.hpp"
 
 #include <string_view>
+#include <vector>
 
 class Lexer {
     public:
         explicit Lexer(std::string_view source);
         Token next_token();
+        static std::vector<Token> tokenizer(std::string_view source);
 
     private:
         Token make_token(TokenType type);

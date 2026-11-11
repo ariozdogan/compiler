@@ -60,6 +60,20 @@ Token Lexer::next_token() {
     return make_token(TokenType::Invalid);
 }
 
+std::vector<Token> Lexer::tokenizer(std::string_view source) {
+    std::vector<Token> tokens;
+    Lexer lexer(source);
+
+    while (true) {
+        Token token = lexer.next_token();
+        tokens.push_back(token);
+
+        if (token.type == TokenType::EndOfFile) break;
+    }
+
+    return tokens;
+}
+
 bool Lexer::is_at_end() const {
     return current >= source_.size();
 }
